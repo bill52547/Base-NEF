@@ -10,7 +10,7 @@
 
 import click
 import json
-from nef.tools.autodoc import doc_gen
+from nef.tools.doc_gen import doc_gen
 
 
 @click.command()

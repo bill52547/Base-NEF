@@ -60,6 +60,6 @@ setup(name = 'nef',
       zip_safe = False,
       entry_points = """
             [console_scripts]
-            nef_autodoc=nef.tools.autodoc.cli:cli_autodoc
+            nef_autodoc=nef.tools.doc_gen.cli:cli_autodoc
       """
       )

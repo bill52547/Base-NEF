@@ -15,12 +15,12 @@ import attr
 from .arithematic_ops import unary_ops, binary_ops
 
 
-class BaseClass:
-    '''`BaseClass` is suited for storing data objects. It is the most basic class type in
+class NefClass:
+    '''`NefClass` is suited for storing data objects. It is the most basic class type in
     `srfnef` package. All data and functions would be seriously considered to be defined as a
-    Dataclass instance. More specific, only the field `.data` in a `BaseClass` would be regarded
+    Dataclass instance. More specific, only the field `.data` in a `NefClass` would be regarded
     as the only computable part with in an instance. Any other class that defined to contained
-    data would a subclass of `BaseClass`.
+    data would a subclass of `NefClass`.
     '''
 
     def _replace(self, **kwargs):
@@ -29,8 +29,18 @@ class BaseClass:
         '''
         return attr.evolve(self, **kwargs)
 
+    @classmethod
+    def fields(cls, verbose = False):
+        '''Returns a tuple of field names for this `DataClass` instance.
+        '''
+        if verbose:
+            return [(k, v.type) for (k, v) in attr.fields_dict(cls).items()]
+        else:
+            return [(k, v.type) for (k, v) in attr.fields_dict(cls).items() if not k.startswith(
+                '_')]
+
     def items(self, recurse = True):
-        '''Return a dictionary of fields for this 'BaseClass` instance.
+        '''Return a dictionary of fields for this 'NefClass` instance.
         '''
 
         return attr.asdict(self, recurse)
@@ -42,7 +52,7 @@ class BaseClass:
         return list(attr.asdict(self, recurse).values())
 
     def map(self, f, *args):
-        '''`Map` applis a function to the field `.data` of this BaseClass instance, and return a
+        '''`Map` applis a function to the field `.data` of this NefClass instance, and return a
         new instance with the same type'''
         return self._replace(data = f(self.data, *args))
 
@@ -66,8 +76,10 @@ def _update_class_dict(cls: type, *, recurse = True):
     import nef
     nef.class_dict.update({cls.__name__: cls.__annotations__})
     if recurse:
-        for tp in cls.__annotations__.values():
-            if tp in nef.BASIC_TYPES:
+        for name, tp in cls.__annotations__.items():
+            if name == 'data':
+                pass
+            elif tp in nef.BASIC_TYPES:
                 pass
             elif tp not in nef.class_dict:
                 _update_class_dict(tp, recurse = recurse)
@@ -89,7 +101,7 @@ def nef_class(cls, bind = True):
     Some basic arithmetic operators are mounted and would apply on `.data` field.
     '''
     base = attr.s(frozen = True, auto_attribs = True, slots = True)(cls)
-    cls_ = types.new_class(base.__name__, (base, BaseClass))
+    cls_ = types.new_class(base.__name__, (base, NefClass))
     if bind:
         _update_class_dict(cls, recurse = True)
     unary_ops(cls_)

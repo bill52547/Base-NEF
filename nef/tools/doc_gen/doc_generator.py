@@ -133,9 +133,9 @@ def statistic_block_gen(dct: dict = {}):
 def doc_gen(dct: dict = {}, path: str = None):
     import pypandoc
     if path is None:
-        path = './autodoc-' + datetime_str + '.md'
+        path = './doc_gen-' + datetime_str + '.md'
     if path.endswith('/'):
-        path += './autodoc-' + datetime_str + '.md'
+        path += './doc_gen-' + datetime_str + '.md'
     foldername = os.path.dirname(os.path.abspath(path)) + '/'
     out_text = title_block_gen()
     out_text += block_gen(dct, foldername = foldername)
