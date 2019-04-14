@@ -57,5 +57,9 @@ setup(name = 'nef',
           'deepdish==0.3.6',
           'Click',
       ],
-      zip_safe = False
+      zip_safe = False,
+      entry_points = """
+            [console_scripts]
+            nef_autodoc=nef.tools.autodoc.cli:cli_autodoc
+      """
       )

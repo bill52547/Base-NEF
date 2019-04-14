@@ -8,3 +8,4 @@
 @desc:
 '''
 from .doc_generator import block_gen, title_block_gen, doc_gen
+from .cli import cli_autodoc

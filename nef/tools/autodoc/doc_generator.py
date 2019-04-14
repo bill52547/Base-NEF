@@ -12,7 +12,9 @@ import os
 import sys
 import time
 from nef.utils import tqdm, any_type_loader
+import matplotlib
 
+matplotlib.use('Agg')
 timestamp = time.time()
 datetime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(timestamp)))
 datetime_str = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime(int(timestamp)))
@@ -43,7 +45,7 @@ def title_block_gen():
 
 
 def _text_gen_as_table(dct: dict = {}):
-    out_text = ['|key|values|\n|:--|:--|\n']
+    out_text = ['|key|values|\n|:---|:---|\n']
     for key, val in dct.items():
         if not isinstance(val, dict):
             if isinstance(val, str) and len(val) > 30:
@@ -59,6 +61,7 @@ def _text_gen_as_table(dct: dict = {}):
 def block_gen(dct: dict = {}, *, foldername = './'):
     out_text = []
 
+    print('Generating text blocks...')
     for key, val in tqdm(dct.items()):
         out_text.append(f'### Name: {key}\n')
         out_text += _text_gen_as_table(val)
@@ -93,18 +96,21 @@ def statistic_block_gen(dct: dict = {}):
     key_set = set()
     for name, sub_dct in dct.items():
         for key, val in sub_dct.items():
-            try:
-                float(val)
+            if len(val) < 30:
                 key_set.add(key)
-            except:
-                pass
-    col_names = ['| name ', '| ---- ']
+            #
+            # try:
+            #     float(val)
+            #     key_set.add(key)
+            # except:
+            #     pass
+    col_names = ['|name ', '|:---']
     for key in key_set:
-        col_names[0] += '| ' + key + ' '
+        col_names[0] += '|' + key + ''
     else:
         col_names[0] += '|\n'
     for _ in key_set:
-        col_names[1] += '| ---- '
+        col_names[1] += '|:---'
     else:
         col_names[1] += '|\n'
     out_text += col_names
@@ -113,15 +119,14 @@ def statistic_block_gen(dct: dict = {}):
         row = '| ' + name + ' '
         for key in key_set:
             if key in sub_dct:
-                row += '| ' + str(sub_dct[key]) + ' '
+                row += '|' + str(sub_dct[key]) + ''
             else:
-                row += '| - '
+                row += '|-'
         else:
             row += '|\n'
 
         out_text += [row]
 
-    print(out_text)
     return out_text
 
 
@@ -137,5 +142,6 @@ def doc_gen(dct: dict = {}, path: str = None):
     out_text += statistic_block_gen(dct)
     with open(path, 'w') as fout:
         fout.writelines(out_text)
+    print('Converting MD to PDF...')
     pypandoc.convert_file(path, 'pdf', outputfile = path + '.pdf')
     return path
