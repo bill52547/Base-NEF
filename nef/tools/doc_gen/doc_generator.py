@@ -11,7 +11,8 @@ from getpass import getuser
 import os
 import sys
 import time
-from nef.utils import tqdm, any_type_loader
+from nef.utils import tqdm
+from nef.tools.io.io import local_data_loader
 import matplotlib
 
 matplotlib.use('Agg')
@@ -72,7 +73,7 @@ def block_gen(dct: dict = {}, *, foldername = './'):
             url = val['data']
             if url.endswith('npy'):
                 from matplotlib import pyplot as plt
-                data = any_type_loader(url.split(':')[-1])
+                data = local_data_loader(url.split(':')[-1])
                 shape = data.shape
                 plt.figure(figsize = (30, 10))
                 plt.subplot(131)
