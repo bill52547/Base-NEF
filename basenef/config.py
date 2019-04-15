@@ -16,8 +16,9 @@ RESOURCE_PATH = DATABASE_PATH + 'resources' + separator
 SCHEMA_PATH = DATABASE_PATH + 'schemas' + separator
 CACHE_PATH = DATABASE_PATH + 'caches' + separator
 LOG_PATH = DATABASE_PATH + 'logs' + separator
+DOC_PATH = DATABASE_PATH + 'docs' + separator
 
-_PATH_LIST = [DATABASE_PATH, RESOURCE_PATH, SCHEMA_PATH, CACHE_PATH, LOG_PATH]
+_PATH_LIST = [DATABASE_PATH, RESOURCE_PATH, SCHEMA_PATH, CACHE_PATH, LOG_PATH, DOC_PATH]
 
 for _path in _PATH_LIST:
     if not os.path.isdir(_path):

@@ -30,20 +30,16 @@ class NefClass:
         return attr.evolve(self, **kwargs)
 
     @classmethod
-    def fields(cls, verbose = False):
+    def fields(cls):
         '''Returns a tuple of field names for this `DataClass` instance.
         '''
-        if verbose:
-            return [(k, v.type) for (k, v) in attr.fields_dict(cls).items()]
-        else:
-            return [(k, v.type) for (k, v) in attr.fields_dict(cls).items() if not k.startswith(
-                '_')]
+        return [(k, v.type) for (k, v) in attr.fields_dict(cls).items()]
 
     def items(self, recurse = True):
         '''Return a dictionary of fields for this 'NefClass` instance.
         '''
 
-        return attr.asdict(self, recurse)
+        return attr.asdict(self, recurse).items()
 
     def keys(self, recurse = True):
         return list(attr.asdict(self, recurse).keys())
