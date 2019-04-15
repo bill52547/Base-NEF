@@ -62,7 +62,7 @@ def _text_gen_as_table(dct: dict = {}):
     return out_text
 
 
-def block_gen(dct: dict = {}, *, foldername = DOC_PATH, filename = ''):
+def block_gen(dct: dict = {}, *, foldername = DOC_DIR, filename = ''):
     out_text = []
 
     print('Generating text blocks...')
@@ -142,10 +142,10 @@ def doc_gen(dct: dict = {}, filename: str = None):
     if filename is None:
         filename = 'doc_gen-' + datetime_str + '.md'
     out_text = title_block_gen()
-    out_text += block_gen(dct, foldername = DOC_PATH, filename = filename)
+    out_text += block_gen(dct, foldername = DOC_DIR, filename = filename)
     out_text += statistic_block_gen(dct)
-    with open(DOC_PATH + filename, 'w') as fout:
+    with open(DOC_DIR + filename, 'w') as fout:
         fout.writelines(out_text)
     print('Converting MD to PDF...')
-    pypandoc.convert_file(DOC_PATH + filename, 'pdf', outputfile = DOC_PATH + filename + '.pdf')
+    pypandoc.convert_file(DOC_DIR + filename, 'pdf', outputfile = DOC_DIR + filename + '.pdf')
     return filename

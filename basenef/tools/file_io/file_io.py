@@ -11,7 +11,7 @@
 import numpy as np
 from scipy import sparse
 import os
-from basenef.config import RESOURCE_PATH, CACHE_PATH
+from basenef.config import RESOURCE_DIR, CACHE_DIR
 from basenef.utils import file_hasher
 
 
@@ -20,7 +20,7 @@ def local_data_saver(data = None):
     from scipy import sparse
     from basenef.utils import get_hash_of_timestamp
 
-    cache_path = CACHE_PATH + get_hash_of_timestamp()
+    cache_path = CACHE_DIR + get_hash_of_timestamp()
     if data is None:
         return -1
     if isinstance(data, np.ndarray):
@@ -35,7 +35,7 @@ def local_data_saver(data = None):
         raise ValueError(f'Unsupported data type {data.__class__.__name__} saving.')
     hash_ = file_hasher(cache_path)
 
-    res_path = RESOURCE_PATH + hash_ + ext
+    res_path = RESOURCE_DIR + hash_ + ext
     if not os.path.isfile(res_path):
         from shutil import move
         move(cache_path, res_path)
@@ -46,8 +46,8 @@ def local_data_saver(data = None):
 
 
 def local_data_loader(filename: str):
-    if RESOURCE_PATH not in filename:
-        path = RESOURCE_PATH + filename
+    if RESOURCE_DIR not in filename:
+        path = RESOURCE_DIR + filename
         for ext in ['.npy', '.npz']:
             if os.path.isfile(path + ext):
                 path += ext
@@ -97,7 +97,7 @@ def local_data_loader(filename: str):
 #
 #     if hostname is None or hostname in ['127.0.0.1', 'localhost']:
 #         return local_data_loader(filename, is_cache = is_cache)
-#     if os.path.isfile(CACHE_PATH + filename):
+#     if os.path.isfile(CACHE_DIR + filename):
 #         return local_data_loader(filename, is_cache = is_cache)
 #
 #     if is_cache:
@@ -105,7 +105,7 @@ def local_data_loader(filename: str):
 #     else:
 #         remote_path = f'/home/{user}/Database_nef/resources/{filename}'
 #
-#     local_cache_path = CACHE_PATH + filename
+#     local_cache_path = CACHE_DIR + filename
 #
 #     sftp_download(remote_path, local_cache_path, hostname = hostname, port = port, pkey = pkey)
 #

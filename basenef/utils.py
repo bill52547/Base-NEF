@@ -87,3 +87,31 @@ def get_hash_of_timestamp():
     timestamp = time.time()
     m.update(str(timestamp).encode('utf-8'))
     return m.hexdigest()
+
+
+def load_schema(path = None):
+    if path is None:
+        from basenef.config import SCHEMA_DIR
+        import os
+        main_path = os.path.abspath(os.path.dirname(os.path.abspath(__file__)))
+        module_name = main_path.split('/')[-1]
+        path = SCHEMA_DIR + module_name + '_schema.json'
+
+    import json
+    with open(path, 'r') as fin:
+        return json.load(fin)
+
+
+def append_schema(path = None, dct: dict = {}):
+    if path is None:
+        from basenef.config import SCHEMA_DIR
+        import os
+        main_path = os.path.abspath(os.path.dirname(os.path.abspath(__file__)))
+        module_name = main_path.split('/')[-1]
+        path = SCHEMA_DIR + module_name + '_schema.json'
+
+    import json
+    with open(path, 'w+') as json_file:
+        schema = json.load(json_file)
+        schema.update(dct)
+        json.dump(schema, json_file)

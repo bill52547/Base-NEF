@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 MAJOR = 0
 MINOR = 1
-MICRO = 1  # 0 for alpha, 1 for beta, 2 for release candicate, 3 for release
+MICRO = 2  # 0 for alpha, 1 for beta, 2 for release candicate, 3 for release
 MINOR_SUB = 1
 
 
