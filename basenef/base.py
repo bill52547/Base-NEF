@@ -12,8 +12,6 @@ import types
 
 import attr
 
-from .arithematic_ops import unary_ops, binary_ops
-
 
 class NefClass:
     '''`NefClass` is suited for storing data objects. It is the most basic class type in
@@ -24,19 +22,19 @@ class NefClass:
     '''
 
     def _replace(self, **kwargs):
-        '''Creates a new object of the same type of instance, replacing fields with values from
+        '''Creates a new object of the same type of instance, replacing __annotations__ with values from
         changes.
         '''
         return attr.evolve(self, **kwargs)
 
     @classmethod
-    def fields(cls):
+    def __annotations__(cls):
         '''Returns a tuple of field names for this `DataClass` instance.
         '''
         return [(k, v.type) for (k, v) in attr.fields_dict(cls).items()]
 
     def items(self, recurse = True):
-        '''Return a dictionary of fields for this 'NefClass` instance.
+        '''Return a dictionary of __annotations__ for this 'NefClass` instance.
         '''
 
         return attr.asdict(self, recurse).items()
@@ -63,33 +61,13 @@ class NefClass:
     def __call__(self, **kwargs):
         return self._replace(**kwargs)
 
-    @classmethod
-    def __annotations__(cls):
-        return attr.fields_dict(cls)
-
-
-def _update_class_dict(cls: type, *, recurse = True):
-    import basenef
-    basenef.class_dict.update({cls.__name__: cls.__annotations__})
-    if recurse:
-        for name, tp in cls.__annotations__.items():
-            if name == 'data':
-                pass
-            elif tp in basenef.BASIC_TYPES:
-                pass
-            elif tp not in basenef.class_dict:
-                _update_class_dict(tp, recurse = recurse)
-            else:
-                print(f'Warning: {cls.__name__} already in class_dict. Ignored. ')
-    return cls
-
 
 def nef_class(cls):
     '''This function is a decorator that is used to add generated special methods to classes, as
     described below.
 
-    The `nef_class()` decorator examines the class to find fields. A field is defined as class
-    variable that has a type annotation. The order of the fields in all of the generated methods
+    The `nef_class()` decorator examines the class to find __annotations__. A field is defined as class
+    variable that has a type annotation. The order of the __annotations__ in all of the generated methods
     is the order in which they appear in the class definition.
     Be default the instance decorated by `nef_class` is attributed frozen, which means we prefer
     it to be immutable.
@@ -98,10 +76,6 @@ def nef_class(cls):
     '''
     base = attr.s(frozen = True, auto_attribs = True, slots = True)(cls)
     cls_ = types.new_class(base.__name__, (base, NefClass))
-    # if bind:
-    #     _update_class_dict(cls, recurse = True)
-    unary_ops(cls_)
-    binary_ops(cls_)
     return cls_
 
 

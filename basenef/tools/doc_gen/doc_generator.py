@@ -110,12 +110,7 @@ def statistic_block_gen(dct: dict = {}):
         for key, val in sub_dct.items():
             if isinstance(val, str) and len(val) < 30:
                 key_set.add(key)
-            #
-            # try:
-            #     float(val)
-            #     key_set.add(key)
-            # except:
-            #     pass
+
     col_names = ['|name ', '|:---']
     for key in key_set:
         col_names[0] += '|' + key + ''

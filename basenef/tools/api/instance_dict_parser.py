@@ -16,7 +16,7 @@ def _convert_single_instance_to_dict(obj: NefClass = None, *, verbose = True):
         raise ValueError('valid instance are needed.')
 
     kwargs = {'classname': obj.__class__.__name__}
-    for key, _type in obj.__class__.fields():
+    for key, _type in obj.__class__.__annotations__():
         if not verbose and key.startswith('_'):
             continue
         if key == 'data':
