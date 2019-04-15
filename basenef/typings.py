@@ -2,7 +2,7 @@
 '''
 @author: Minghao Guo
 @contact: mh.guo0111@gmail.com
-@software: nef
+@software: basenef
 @file: typings.py
 @date: 4/13/2019
 @desc:

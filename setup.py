@@ -19,7 +19,7 @@ def get_version(major, minor, micro, minor_sub):
 SHORT_VERSION, FULL_VERSION, TIME_STRING = get_version(MAJOR, MINOR, MICRO, MINOR_SUB)
 
 
-def write_version_py(filename = 'nef/version.py'):
+def write_version_py(filename = 'basenef/version.py'):
     cnt = """
 # THIS FILE IS GENERATED FROM NEF SETUP.PY
 # 
@@ -36,9 +36,9 @@ generated_time = '%(time_string)s'
 
 write_version_py()
 
-setup(name = 'nef',
+setup(name = 'basenef',
       version = FULL_VERSION,
-      py_modules = ['srfnef'],
+      py_modules = ['basenef'],
       description = 'Not Enough Functions basing module',
       author = 'Minghao Guo',
       author_email = 'mh.guo0111@gmail.com',
@@ -60,6 +60,6 @@ setup(name = 'nef',
       zip_safe = False,
       entry_points = """
             [console_scripts]
-            nef_autodoc=nef.tools.doc_gen.cli:cli_autodoc
+            nef_autodoc=basenef.tools.doc_gen.cli:cli_autodoc
       """
       )

@@ -7,7 +7,7 @@
 @date: 4/9/2019
 @desc:
 '''
-from nef.typings import BASIC_TYPE_DICT_REVERT, BASIC_TYPE_CONVERTER
+from basenef.typings import BASIC_TYPE_DICT_REVERT, BASIC_TYPE_CONVERTER
 
 
 def _convert_single_instance_to_dict(obj: object = None, *, verbose = True):

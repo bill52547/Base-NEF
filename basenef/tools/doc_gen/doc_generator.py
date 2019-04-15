@@ -2,7 +2,7 @@
 '''
 @author: Minghao Guo
 @contact: mh.guo0111@gmail.com
-@software: nef
+@software: basenef
 @file: doc_generator.py
 @date: 4/13/2019
 @desc:
@@ -11,8 +11,8 @@ from getpass import getuser
 import os
 import sys
 import time
-from nef.utils import tqdm
-from nef.tools.io.io import local_data_loader
+from basenef.utils import tqdm
+from basenef.tools.io.io import local_data_loader
 import matplotlib
 
 matplotlib.use('Agg')

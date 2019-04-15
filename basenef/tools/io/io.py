@@ -2,7 +2,7 @@
 '''
 @author: Minghao Guo
 @contact: mh.guo0111@gmail.com
-@software: nef
+@software: basenef
 @file: io.py
 @date: 4/14/2019
 @desc:
@@ -11,7 +11,7 @@
 import numpy as np
 from scipy import sparse
 import os
-from nef.utils import separator
+from basenef.utils import separator
 
 DATABASE_PATH = os.environ['HOME'] + separator + 'Database_nef' + separator
 RESOURCE_PATH = DATABASE_PATH + 'resources' + separator
@@ -21,7 +21,7 @@ LOG_PATH = DATABASE_PATH + 'logs' + separator
 
 
 def local_data_saver(path: str = None, data = None, *, is_cache = False):
-    from nef.utils import get_hash_of_timestamp
+    from basenef.utils import get_hash_of_timestamp
     if path is None:
         path = RESOURCE_PATH + get_hash_of_timestamp()
 

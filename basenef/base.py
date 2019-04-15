@@ -2,7 +2,7 @@
 '''
 @author: Minghao Guo
 @contact: mh.guo0111@gmail.com
-@software: nef
+@software: basenef
 @file: base.py
 @date: 4/13/2019
 @desc:
@@ -73,15 +73,15 @@ class NefClass:
 
 
 def _update_class_dict(cls: type, *, recurse = True):
-    import nef
-    nef.class_dict.update({cls.__name__: cls.__annotations__})
+    import basenef
+    basenef.class_dict.update({cls.__name__: cls.__annotations__})
     if recurse:
         for name, tp in cls.__annotations__.items():
             if name == 'data':
                 pass
-            elif tp in nef.BASIC_TYPES:
+            elif tp in basenef.BASIC_TYPES:
                 pass
-            elif tp not in nef.class_dict:
+            elif tp not in basenef.class_dict:
                 _update_class_dict(tp, recurse = recurse)
             else:
                 print(f'Warning: {cls.__name__} already in class_dict. Ignored. ')
