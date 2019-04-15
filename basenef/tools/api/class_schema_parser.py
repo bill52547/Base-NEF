@@ -10,8 +10,8 @@
 
 import numpy as np
 
-from nef.base import make_nef_class
-from nef.typings import BASIC_TYPES, BASIC_TYPE_DICT_REVERT, BASIC_TYPE_DICT
+from basenef.base import make_nef_class
+from basenef.typings import BASIC_TYPES, BASIC_TYPE_DICT_REVERT, BASIC_TYPE_DICT
 
 
 def _to_string(o):

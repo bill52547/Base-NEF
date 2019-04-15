@@ -55,6 +55,6 @@ def dump(o: dict, path: str, *, verbose = False):
         json_.dump(dct, fout, indent = 4, separators = [',', ':'])
 
 
-from nef.base import NefClass
+from basenef.base import NefClass
 
 NefClass.dumps = classmethod(lambda cls, verbose = False: dumps(cls, verbose = verbose))

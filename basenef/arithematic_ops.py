@@ -2,7 +2,7 @@
 '''
 @author: Minghao Guo
 @contact: mh.guo0111@gmail.com
-@software: nef
+@software: basenef
 @file: arithematic_ops.py
 @date: 4/13/2019
 @desc:

@@ -2,7 +2,7 @@
 '''
 @author: Minghao Guo
 @contact: mh.guo0111@gmail.com
-@software: nef
+@software: basenef
 @file: cli.py
 @date: 4/14/2019
 @desc:
@@ -10,7 +10,7 @@
 
 import click
 import json
-from nef.tools.doc_gen import doc_gen
+from basenef.tools.doc_gen import doc_gen
 
 
 @click.command()
