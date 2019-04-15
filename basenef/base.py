@@ -88,7 +88,7 @@ def _update_class_dict(cls: type, *, recurse = True):
     return cls
 
 
-def nef_class(cls, bind = True):
+def nef_class(cls):
     '''This function is a decorator that is used to add generated special methods to classes, as
     described below.
 
@@ -102,8 +102,8 @@ def nef_class(cls, bind = True):
     '''
     base = attr.s(frozen = True, auto_attribs = True, slots = True)(cls)
     cls_ = types.new_class(base.__name__, (base, NefClass))
-    if bind:
-        _update_class_dict(cls, recurse = True)
+    # if bind:
+    #     _update_class_dict(cls, recurse = True)
     unary_ops(cls_)
     binary_ops(cls_)
     return cls_
@@ -114,14 +114,14 @@ def make_nef_class(dct: dict = {}):
     for class_name, fields in dct.items():
         anns = {}
         namespace = {}
-        for item in fields:
-            if isinstance(item, str):
-                raise ValueError('A type assignment is required')
-            elif len(item) == 2:
-                name, tp, = item
-            else:
-                raise TypeError(f'Invalid field: {item!r}')
-            anns[name] = tp
+        for field_name, type_ in fields.items():
+            if isinstance(type_, str):
+                try:
+                    from .typings import BASIC_TYPE_CONVERTER
+                    type_ = BASIC_TYPE_CONVERTER[type_]
+                finally:
+                    raise ValueError('A type assignment is required')
+            anns[field_name] = type_
 
         namespace['__annotations__'] = anns
 

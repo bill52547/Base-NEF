@@ -12,7 +12,7 @@ import os
 import sys
 import time
 from basenef.utils import tqdm
-from basenef.tools.io.io import local_data_loader
+from basenef.tools.file_io.file_io import local_data_loader
 import matplotlib
 
 matplotlib.use('Agg')
