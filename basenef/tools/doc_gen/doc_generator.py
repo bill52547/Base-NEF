@@ -11,8 +11,9 @@ from getpass import getuser
 import os
 import sys
 import time
+import numpy as np
 from basenef.utils import tqdm
-from basenef.tools.io.io import local_data_loader
+from basenef.tools.file_io.file_io import local_data_loader
 import matplotlib
 
 matplotlib.use('Agg')
@@ -48,7 +49,9 @@ def title_block_gen():
 def _text_gen_as_table(dct: dict = {}):
     out_text = ['|key|values|\n|:---|:---|\n']
     for key, val in dct.items():
-        if not isinstance(val, dict):
+        if key == 'data':
+            out_text.append(f"| {key} | Ignored |\n")
+        elif not isinstance(val, dict):
             if isinstance(val, str) and len(val) > 30:
                 out_text.append(f"| {key} | Ignored |\n")
             else:
@@ -59,21 +62,26 @@ def _text_gen_as_table(dct: dict = {}):
     return out_text
 
 
-def block_gen(dct: dict = {}, *, foldername = './'):
+def block_gen(dct: dict = {}, *, foldername = DOC_DIR, filename = ''):
     out_text = []
 
     print('Generating text blocks...')
     for key, val in tqdm(dct.items()):
         out_text.append(f'### Name: {key}\n')
         out_text += _text_gen_as_table(val)
-        if 'data' in val:
+        if 'data' in val.keys():
+            print(foldername + 'figures')
             if not os.path.isdir(foldername + 'figures'):
                 os.mkdir(foldername + 'figures')
+            if isinstance(val, dict):
+                from basenef.tools.file_io import data_loader
+                url = val['data']
+                data = data_loader(url)
+            else:
+                data = val.data
 
-            url = val['data']
-            if url.endswith('npy'):
+            if isinstance(data, np.ndarray):
                 from matplotlib import pyplot as plt
-                data = local_data_loader(url.split(':')[-1])
                 shape = data.shape
                 plt.figure(figsize = (30, 10))
                 plt.subplot(131)
@@ -82,7 +90,10 @@ def block_gen(dct: dict = {}, *, foldername = './'):
                 plt.imshow(data[:, int(shape[1] / 2), :].transpose())
                 plt.subplot(133)
                 plt.imshow(data[int(shape[0] / 2), :, :].transpose())
-                img_path = foldername + 'figures/' + key + 'data.png'
+                if filename == '':
+                    img_path = foldername + f'figures/{datetime_str}' + key + 'data.png'
+                else:
+                    img_path = foldername + f'figures/{filename}' + key + 'data.png'
                 plt.savefig(img_path)
                 # out_text.append(f'![]({key}data.png)\n')
                 out_text.append(f"![This is the caption]({img_path})\n")
@@ -97,14 +108,9 @@ def statistic_block_gen(dct: dict = {}):
     key_set = set()
     for name, sub_dct in dct.items():
         for key, val in sub_dct.items():
-            if len(val) < 30:
+            if isinstance(val, str) and len(val) < 30:
                 key_set.add(key)
-            #
-            # try:
-            #     float(val)
-            #     key_set.add(key)
-            # except:
-            #     pass
+
     col_names = ['|name ', '|:---']
     for key in key_set:
         col_names[0] += '|' + key + ''
@@ -131,18 +137,15 @@ def statistic_block_gen(dct: dict = {}):
     return out_text
 
 
-def doc_gen(dct: dict = {}, path: str = None):
+def doc_gen(dct: dict = {}, filename: str = None):
     import pypandoc
-    if path is None:
-        path = './doc_gen-' + datetime_str + '.md'
-    if path.endswith('/'):
-        path += './doc_gen-' + datetime_str + '.md'
-    foldername = os.path.dirname(os.path.abspath(path)) + '/'
+    if filename is None:
+        filename = 'doc_gen-' + datetime_str + '.md'
     out_text = title_block_gen()
-    out_text += block_gen(dct, foldername = foldername)
+    out_text += block_gen(dct, foldername = DOC_DIR, filename = filename)
     out_text += statistic_block_gen(dct)
-    with open(path, 'w') as fout:
+    with open(DOC_DIR + filename, 'w') as fout:
         fout.writelines(out_text)
     print('Converting MD to PDF...')
-    pypandoc.convert_file(path, 'pdf', outputfile = path + '.pdf')
-    return path
+    pypandoc.convert_file(DOC_DIR + filename, 'pdf', outputfile = DOC_DIR + filename + '.pdf')
+    return filename

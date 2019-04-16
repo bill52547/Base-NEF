@@ -8,19 +8,22 @@
 @desc:
 '''
 from basenef.typings import BASIC_TYPE_DICT_REVERT, BASIC_TYPE_CONVERTER
+from basenef.base import NefClass
 
 
-def _convert_single_instance_to_dict(obj: object = None, *, verbose = True):
+def _convert_single_instance_to_dict(obj: NefClass = None, *, verbose = True):
     if obj is None:
         raise ValueError('valid instance are needed.')
 
     kwargs = {'classname': obj.__class__.__name__}
-    for key, val in obj.fields():
+    for key, _type in obj.__class__.__annotations__():
         if not verbose and key.startswith('_'):
             continue
         if key == 'data':
-            kwargs.update({'data': ''})
-        elif val in BASIC_TYPE_DICT_REVERT:
+            from basenef.tools.file_io import data_saver
+            res_path = data_saver(getattr(obj, key))
+            kwargs.update({'data': res_path})  # should be file_io here
+        elif _type in BASIC_TYPE_DICT_REVERT:
             kwargs.update({key: getattr(obj, key)})
         else:
             kwargs.update(
@@ -29,17 +32,27 @@ def _convert_single_instance_to_dict(obj: object = None, *, verbose = True):
     return kwargs
 
 
-def convert_instance_to_dict(objs: list, *, verbose = True):
-    if objs is None:
-        raise ValueError('valid instance are needed.')
+def convert_instance_to_dict(objs_dct: dict, *, verbose = True):
+    if isinstance(objs_dct, NefClass):
+        objs_dct = {str(0): objs_dct}
+    elif isinstance(objs_dct, list):
+        objs_dct = {str(ind): obj for ind, obj in enumerate(objs_dct)}
 
     kwargs = {}
-    for ind, obj in enumerate(objs):
-        kwargs.update({str(ind): _convert_single_instance_to_dict(obj, verbose = verbose)})
+    for key, obj in objs_dct.items():
+        kwargs.update({key: _convert_single_instance_to_dict(obj, verbose = verbose)})
     return kwargs
 
 
 def convert_dict_to_instance(dct: dict, *, schema: dict):
+    if schema is None:
+        raise ValueError('A valid schema is needed.')
+    if isinstance(schema, str):
+        import json as json_
+        try:
+            schema = json_.loads(schema)
+        except ValueError('Can not parse schema: ', schema):
+            pass
     out = {}
     for key, val in dct.items():
         if 'classname' in val:
@@ -47,19 +60,27 @@ def convert_dict_to_instance(dct: dict, *, schema: dict):
             if classname not in schema:
                 raise ValueError(f'can not find valid class assigned for {key} in the first arg')
             cls = schema[classname]
+            print(1, cls)
             if isinstance(cls, dict):
                 from .class_schema_parser import convert_schema_to_class
                 cls = convert_schema_to_class(schema)[classname]
+                print(2, convert_schema_to_class(schema))
         else:
             raise ValueError(f"can not find valid classname in dct.['{key}']")
 
         kwargs = {}
-        for field, type_ in cls.items(verbose = False):
+        print(cls)
+        for field, type_ in cls.fields():
             sub_ = val[field]
-            if isinstance(sub_, dict):
+            if field.startswith('_'):
+                continue
+            elif field == 'data':
+                from basenef.tools.file_io import data_loader
+                kwargs.update({field: data_loader(sub_)})
+            elif isinstance(sub_, dict):
                 kwargs.update(
                     {field: convert_dict_to_instance({field: sub_}, schema = schema)[field]})
             else:
-                kwargs.update({field: BASIC_TYPE_CONVERTER[type_](sub_)})
+                kwargs.update({field: BASIC_TYPE_CONVERTER[type_.__name__](sub_)})
         out.update({key: cls(**kwargs)})
     return out

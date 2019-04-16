@@ -25,11 +25,20 @@ BASIC_TYPE_DICT_REVERT = {int: 'int', float: 'float', bool: 'bool', str: 'str',
                           typing.List[int]: 'List[int]', typing.List[float]: 'List[float]',
                           typing.List[bool]: 'List[bool]', typing.List[str]: 'List[str]'}
 
-BASIC_TYPE_CONVERTER = {int: int,
-                        str: str,
-                        bool: bool,
-                        float: float,
-                        typing.List[int]: lambda x: list(map(int, x[1:-1].split(','))),
-                        typing.List[str]: lambda x: list(map(str, x[1:-1].split(','))),
-                        typing.List[bool]: lambda x: list(map(bool, x[1:-1].split(','))),
-                        typing.List[float]: lambda x: list(map(float, x[1:-1].split(',')))}
+BASIC_TYPE_CONVERTER = {'int': int,
+                        'str': str,
+                        'bool': bool,
+                        'float': float,
+                        'List[int]': lambda x: list(map(int, x[1:-1].split(','))),
+                        'List[str]': lambda x: list(map(str, x[1:-1].split(','))),
+                        'List[bool]': lambda x: list(map(bool, x[1:-1].split(','))),
+                        'List[float]': lambda x: list(map(float, x[1:-1].split(',')))}
+
+BASIC_TYPE_CONVERTER_REVERT = {'int': str,
+                               'str': str,
+                               'bool': str,
+                               'float': str,
+                               'List[int]': lambda x: list(map(int, x[1:-1].split(','))),
+                               'List[str]': lambda x: list(map(str, x[1:-1].split(','))),
+                               'List[bool]': lambda x: list(map(bool, x[1:-1].split(','))),
+                               'List[float]': lambda x: list(map(float, x[1:-1].split(',')))}
